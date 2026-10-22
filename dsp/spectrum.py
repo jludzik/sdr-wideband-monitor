@@ -53,17 +53,13 @@ class SpectrumProcessor:
         return SpectrumResult(frequency_hz=frequency_hz, power=power[self._edge_mask])
 
 
-    def reset_max_hold(self) -> None:
-        self._max_hold_spectrum = None
-
-    def convert_to_db(self, spectrum: SpectrumResult) -> SpectrumResult:
-        new_spectrum = SpectrumResult(power=(10 * np.log10(spectrum.power + 1e-24)), frequency_hz=spectrum.frequency_hz)
-        return new_spectrum
+    def convert_power_to_db(self, power: np.ndarray) -> np.ndarray:
+        return (10 * np.log10(power + 1e-24))
 
         
-    def compute_max_hold(self, new_signal: np.ndarray, center_freq: int, type: str) -> SpectrumResult:
+    def compute_max_hold(self, power: np.ndarray, center_freq: int, type: str) -> SpectrumResult:
 
-        new_spectrum = self.compute_welch(new_signal, center_freq, type)
+        new_spectrum = self.compute_welch(power, center_freq, type)
 
         if((self._max_hold_spectrum is None) or not (np.array_equal(new_spectrum.frequency_hz, self._max_hold_spectrum.frequency_hz))):
             self._max_hold_spectrum = new_spectrum
@@ -71,5 +67,8 @@ class SpectrumProcessor:
             self._max_hold_spectrum.power = np.maximum(self._max_hold_spectrum.power, new_spectrum.power)
 
         return self._max_hold_spectrum
+
+    def reset_max_hold(self) -> None:
+            self._max_hold_spectrum = None
 
     

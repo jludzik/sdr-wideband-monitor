@@ -30,7 +30,8 @@ class SpectrumConfig:
 LTE_1800 = SDRConfig(
     sample_rate=35_000_000,
     bandwidth=35_000_000,
-    center_freq=1_872_500_000,
+    #center_freq=1_872_500_000,
+    center_freq=1_860_500_000,
     gain_control_mode="manual",
     gain=55.0
 )

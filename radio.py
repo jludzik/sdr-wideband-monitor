@@ -30,6 +30,7 @@ class PlutoSDR:
 
     def set_center_freq(self, frequency_hz: int) -> None:
         self._sdr.rx_lo = int(frequency_hz)
+        self._sdr.rx_destroy_buffer()
 
 
     def set_sampling_rate(self, sampling_rate: int) -> None:
@@ -53,3 +54,8 @@ class PlutoSDR:
     @property
     def bandwidth(self) -> int:
         return int(self._sdr.rx_rf_bandwidth)
+
+
+    @property
+    def buffer_size(self) -> int:
+        return int(self._sdr.rx_buffer_size)
