@@ -1,14 +1,17 @@
 import numpy as np
 import scipy.signal
 
-from config import SpectrumConfig
+from config import SpectrumConfig, RadioConfig
 from data_models import SpectrumResult
 
 
 class SpectrumProcessor:
-    def __init__(self, sample_rate: int, spectrum_config: SpectrumConfig) -> None:
-        self._sample_rate = sample_rate
+    def __init__(self, spectrum_config: SpectrumConfig, radio_config: RadioConfig) -> None:
         self._spectrum_config = spectrum_config
+        
+        self._sample_rate = radio_config.sample_rate
+        self._center_freq = radio_config.center_freq
+
         self._frequency_offset = self._create_frequency_axis()
         self._edge_mask = self._create_edge_mask()
         self._max_hold_spectrum = None
@@ -22,11 +25,11 @@ class SpectrumProcessor:
         return (np.abs(self._frequency_offset) <= self._spectrum_config.processing_bandwidth / 2)
 
 
-    def get_frequency_axis(self, center_freq: int) -> np.ndarray:
-        return (self._frequency_offset[self._edge_mask] + center_freq)
+    def get_frequency_axis(self) -> np.ndarray:
+        return (self._frequency_offset[self._edge_mask] + self._center_freq)
 
 
-    def compute_welch(self, signal: np.ndarray, center_freq: int, type: str) -> SpectrumResult:
+    def compute_welch(self, signal: np.ndarray, type: str) -> SpectrumResult:
 
         _, power = scipy.signal.welch(
             signal,
@@ -48,7 +51,7 @@ class SpectrumProcessor:
             print(type)
             power = np.zeros(self._spectrum_config.nfft)
            
-        frequency_hz = self.get_frequency_axis(center_freq)
+        frequency_hz = self.get_frequency_axis()
 
         return SpectrumResult(frequency_hz=frequency_hz, power=power[self._edge_mask])
 
@@ -57,9 +60,9 @@ class SpectrumProcessor:
         return (10 * np.log10(power + 1e-24))
 
         
-    def compute_max_hold(self, power: np.ndarray, center_freq: int, type: str) -> SpectrumResult:
+    def compute_max_hold(self, power: np.ndarray, type: str) -> SpectrumResult:
 
-        new_spectrum = self.compute_welch(power, center_freq, type)
+        new_spectrum = self.compute_welch(power, self._center_freq, type)
 
         if((self._max_hold_spectrum is None) or not (np.array_equal(new_spectrum.frequency_hz, self._max_hold_spectrum.frequency_hz))):
             self._max_hold_spectrum = new_spectrum
