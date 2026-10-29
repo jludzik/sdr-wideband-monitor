@@ -61,7 +61,7 @@ NOISE_1800 = NoiseConfig(
     fcme_initial_grp_ratio=0.06,
     median_length=1,
     detection_pfa_low=1e-14,
-    detection_pfa_high=1e-42
+    detection_pfa_high=1e-50
 )
 
 DETECTOR_1800 = ActivityDetectorConfig(

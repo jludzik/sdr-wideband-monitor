@@ -15,13 +15,18 @@ The main goal is to monitor a wide frequency range, automatically scan selected 
 - Welch PSD estimation
 - Live spectrum visualization
 - Processing bandwidth / edge masking
-- DC offset reduction
 - MAX HOLD spectrum
+- Noise floor estimation
+- Radio activity detection
+
+<p align="center">
+    <img src="docs/activity_detector_preview.png" alt="activity_detector_preview" width="500"/>
+</p>
+
+
 
 ## Planned features
 
-- Noise floor estimation
-- Radio activity detection
 - Burst tracking
 - Automatic frequency scanning
 - Signal feature extraction

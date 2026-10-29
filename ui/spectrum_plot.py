@@ -14,8 +14,9 @@ class LiveSpectrumPlot:
         freq_mhz = frequency_hz * 1e-6
 
         self._line, = self._ax.plot(freq_mhz, np.zeros(len(frequency_hz)), label="Signal Spectrum", color="blue")
-        self._line_optional_1, = self._ax.plot(freq_mhz, np.zeros(len(frequency_hz)), label="Estimated Noise Floor", color="red", linestyle="--")
-        self._line_optional_2, = self._ax.plot(freq_mhz, np.zeros(len(frequency_hz)), label="Detection High Threshold", color="green", linestyle="--")
+        self._line_optional_1, = self._ax.plot(freq_mhz, np.zeros(len(frequency_hz)), label="Estimated Noise Floor", color="black", linestyle="--")
+        self._line_optional_2, = self._ax.plot(freq_mhz, np.zeros(len(frequency_hz)), label="Detection HIGH Threshold", color="red", linestyle="--")
+        self._line_optional_3, = self._ax.plot(freq_mhz, np.zeros(len(frequency_hz)), label="Detection LOW Threshold", color="green", linestyle="--")
         self._activity_points = self._ax.scatter([], [], s=10, color="darkorange", label="Detected Activity", zorder=3)
 
 
@@ -28,7 +29,7 @@ class LiveSpectrumPlot:
         plt.show(block=False)
 
 
-    def update(self,spectrum: SpectrumResult, optional_1y: Optional[np.ndarray] = None, optional_2y: Optional[np.ndarray] = None, occupied_bins: Optional[np.ndarray] = None) -> None:
+    def update(self,spectrum: SpectrumResult, optional_1y: Optional[np.ndarray] = None, optional_2y: Optional[np.ndarray] = None, optional_3y: Optional[np.ndarray] = None, occupied_bins: Optional[np.ndarray] = None) -> None:
 
         freq_mhz = spectrum.frequency_hz * 1e-6
 
@@ -50,6 +51,13 @@ class LiveSpectrumPlot:
             self._line_optional_2.set_visible(True)
         else:
             self._line_optional_2.set_visible(False)    
+
+        if optional_3y is not None:
+            self._line_optional_3.set_xdata(freq_mhz)
+            self._line_optional_3.set_ydata(optional_3y)
+            self._line_optional_3.set_visible(True)
+        else:
+            self._line_optional_3.set_visible(False)     
 
 
         if occupied_bins is not None:

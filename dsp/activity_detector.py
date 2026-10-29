@@ -18,7 +18,7 @@ class ActivityDetector:
         self._frequency_hz = None
 
 
-    def confirm_over_time(self, occupied_bins: np.ndarray, frequency_hz: np.ndarray) -> np.ndarray:
+    def _confirm_over_time(self, occupied_bins: np.ndarray, frequency_hz: np.ndarray) -> np.ndarray:
 
         if self._frequency_hz is None or not np.array_equal(self._frequency_hz, frequency_hz):
             self.reset()
@@ -30,7 +30,7 @@ class ActivityDetector:
         return hits >= self._activity_detector_config.required_hits
 
 
-    def lad(self, candidate_freq_bins: np.ndarray, strong_freq_bins: np.ndarray) -> np.ndarray:
+    def _lad(self, candidate_freq_bins: np.ndarray, strong_freq_bins: np.ndarray) -> np.ndarray:
         freq_group_ids, _ = label(candidate_freq_bins)
         freq_group_confirmed = np.unique(freq_group_ids[strong_freq_bins])
         freq_group_confirmed = freq_group_confirmed[freq_group_confirmed != 0]
@@ -42,9 +42,9 @@ class ActivityDetector:
         candidate_bins = spectrum_lin.power > det_thrs_low_lin
         strong_bins = spectrum_lin.power > det_thrs_high_lin
 
-        occuipied_bins = self.lad(candidate_bins, strong_bins)
+        occuipied_bins = self._lad(candidate_bins, strong_bins)
 
-        time_confirmed_bins = self.confirm_over_time(occuipied_bins, spectrum_lin.frequency_hz)
+        time_confirmed_bins = self._confirm_over_time(occuipied_bins, spectrum_lin.frequency_hz)
 
         final_bins = occuipied_bins & time_confirmed_bins
 

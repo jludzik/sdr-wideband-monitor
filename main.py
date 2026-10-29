@@ -41,8 +41,9 @@ def main() -> None:
         noise_floor_db = spectrum_processor.convert_power_to_db(noise_floor_lin)
 
         detection_threshold_high_db = spectrum_processor.convert_power_to_db(detection_threshold_high_lin)
+        detection_threshold_low_db = spectrum_processor.convert_power_to_db(detection_threshold_low_lin)
 
-        plot.update(spectrum_db, noise_floor_db, detection_threshold_high_db, occupied_bins=final_bins)
+        plot.update(spectrum_db, noise_floor_db, detection_threshold_high_db, detection_threshold_low_db, occupied_bins=final_bins)
 
 
         
